@@ -290,16 +290,13 @@ class _VerifyButtonWidget extends ConsumerWidget {
           return;
         }
 
-        final success = await ref
+        await ref
             .read(otpNotifierProvider.notifier)
             .verifyOtp(phoneNumber, otp);
-
-
-
-        if (context.mounted && success) {
-          debugPrint("moving to next page");
-          context.go('/');
-        }
+        // if (context.mounted && success) {
+        //   debugPrint("moving to home page");
+        //   context.pushReplacement(RouteNames.homePage);
+        // }
       },
     );
   }

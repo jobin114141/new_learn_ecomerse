@@ -3,8 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/core/routes/route_name.dart';
 import 'package:my_ecomerse/features/auth/presentation/providers/auth_state_provider.dart';
-import 'package:my_ecomerse/features/auth/presentation/screens/otp_login_page.dart';
+import 'package:my_ecomerse/features/auth/presentation/screens/otp_screen.dart';
 import 'package:my_ecomerse/features/auth/presentation/screens/phone_login_screen.dart';
+import 'package:my_ecomerse/features/home/presentation/screens/home_screen.dart';
 import 'package:my_ecomerse/features/splash/presentation/screens/splash_screen.dart';
 
 /// Helper Notifier that bridges Riverpod state changes to GoRouter's refreshListenable
@@ -37,13 +38,16 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       switch (authStatus) {
         case AuthStatus.initial:
-          return RouteNames.initial; // Stay on Splash screen
+          return null; // Stay on Splash screen until token check finishes
 
         case AuthStatus.unauthenticated:
           return isAuthScreen ? null : RouteNames.login; // Go to Login
 
         case AuthStatus.authenticated:
-          return isAuthScreen ? '/' : null; // Go to Home Screen
+          // 💡 FIX: Return RouteNames.homePage ('/homePage') instead of '/'
+          return isAuthScreen || state.matchedLocation == RouteNames.initial
+              ? RouteNames.homePage
+              : null;
       }
     },
     routes: [
@@ -68,11 +72,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // 4. Home Screen (Root '/')
+      // 4. Home Screen homePage
       GoRoute(
-        path: '/',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Home Screen'))),
+        path: RouteNames.homePage,
+        builder: (context, state) => const HomeScreen(),
       ),
     ],
     errorBuilder: (context, state) =>
