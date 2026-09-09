@@ -7,6 +7,7 @@ import 'package:my_ecomerse/features/auth/presentation/screens/otp_screen.dart';
 import 'package:my_ecomerse/features/auth/presentation/screens/phone_login_screen.dart';
 import 'package:my_ecomerse/features/home/presentation/screens/home_screen.dart';
 import 'package:my_ecomerse/features/splash/presentation/screens/splash_screen.dart';
+import 'package:my_ecomerse/features/wishlist/presentation/screens/wishlist_screen.dart';
 
 /// Helper Notifier that bridges Riverpod state changes to GoRouter's refreshListenable
 class RouterNotifier extends ChangeNotifier {
@@ -77,6 +78,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.homePage,
         builder: (context, state) => const HomeScreen(),
       ),
+
+      // 5. wishlist Page
+      GoRoute(
+        path: RouteNames.wishlistPage,
+        builder: (context, state) => const WishlistScreen(),
+      ),
+
+      
     ],
     errorBuilder: (context, state) =>
         Scaffold(body: Center(child: Text('Page Not Found: ${state.error}'))),

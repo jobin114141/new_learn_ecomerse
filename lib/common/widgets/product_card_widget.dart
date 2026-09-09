@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_ecomerse/core/constants/app_colors.dart';
+import 'package:my_ecomerse/features/home/data/models/feature_model.dart';
 
 class ProductCardWidget extends StatelessWidget {
   final String name;
@@ -18,7 +19,7 @@ class ProductCardWidget extends StatelessWidget {
     required this.name,
     required this.image,
     required this.price,
-    required this.rating,
+    this.rating = '',
     this.oldPrice,
     this.isFavorite = false,
     this.width = 155,
@@ -26,6 +27,29 @@ class ProductCardWidget extends StatelessWidget {
     this.onFavoriteTap,
     this.onAddToCartTap,
   });
+
+  factory ProductCardWidget.fromProduct({
+    Key? key,
+    required Product product,
+    bool isFavorite = false,
+    double? width = 155,
+    VoidCallback? onTap,
+    VoidCallback? onFavoriteTap,
+    VoidCallback? onAddToCartTap,
+  }) {
+    return ProductCardWidget(
+      key: key,
+      name: product.name,
+      image: product.fullImageUrl,
+      price: product.price.toStringAsFixed(2),
+      rating: '',
+      isFavorite: isFavorite,
+      width: width,
+      onTap: onTap,
+      onFavoriteTap: onFavoriteTap,
+      onAddToCartTap: onAddToCartTap,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

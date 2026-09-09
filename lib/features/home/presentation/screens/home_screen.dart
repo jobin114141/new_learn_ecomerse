@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/common/widgets/app_bar_base_widget.dart';
 import 'package:my_ecomerse/features/home/presentation/widgets/banner_section.dart';
 import 'package:my_ecomerse/features/home/presentation/widgets/categories_showing_widget.dart';
-import 'package:my_ecomerse/features/home/presentation/widgets/featured_showing_widget.dart';
+import 'package:my_ecomerse/features/home/presentation/widgets/feature_product_section.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({super.key});
@@ -36,7 +36,7 @@ class HomeScreen extends HookConsumerWidget {
              SliverPadding(
               padding: EdgeInsets.only(bottom: 24.0),
               sliver: SliverToBoxAdapter(
-                child: FeaturedShowingWidget(),
+                child: FeatureProductSection(),
               ),
             ),
           ],

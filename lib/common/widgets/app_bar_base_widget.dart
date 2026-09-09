@@ -33,9 +33,20 @@ class CustomSliverAppBar extends StatelessWidget {
       actions: [
         Consumer(
           builder: (context, ref, child) {
-            // final cartCount = ref.watch(cartCountProvider);
+            return IconButton(
+              icon: const Icon(
+                Icons.favorite_border_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                context.push('/WishlistScreen');
+              },
+            );
+          },
+        ),
+        Consumer(
+          builder: (context, ref, child) {
             const cartCount = 3;
-
             return IconButton(
               icon: Badge(
                 label: Text('$cartCount'),
