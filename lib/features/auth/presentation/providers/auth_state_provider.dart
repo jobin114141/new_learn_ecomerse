@@ -1,4 +1,4 @@
-import 'package:my_ecomerse/features/auth/presentation/providers/auth_repository_provider.dart';
+import 'package:my_ecomerse/core/network/api_client_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_state_provider.g.dart';
