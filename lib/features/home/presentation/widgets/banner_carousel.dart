@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -74,24 +75,35 @@ class BannerCarousel extends HookConsumerWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16.0),
-                      child: Image.network(
-                        banner.fullImageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: banner.fullImageUrl,
                         fit: BoxFit.cover,
                         width: double.infinity,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            color: Colors.grey[200],
-                            child: const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2.0),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2.0),
+                          ),
+                        ),
+
+                        // loadingBuilder: (context, child, loadingProgress) {
+                        //   if (loadingProgress == null) return child;
+                        //   return Container(
+                        //     color: Colors.grey[200],
+                        //     child: const Center(
+                        //       child: CircularProgressIndicator(strokeWidth: 2.0),
+                        //     ),
+                        //   );
+                        // },
+                        errorWidget: (context, url, error) {
                           return Container(
                             color: Colors.grey[300],
                             child: const Center(
-                              child: Icon(Icons.broken_image_rounded, size: 44, color: Colors.grey),
+                              child: Icon(
+                                Icons.broken_image_rounded,
+                                size: 44,
+                                color: Colors.grey,
+                              ),
                             ),
                           );
                         },

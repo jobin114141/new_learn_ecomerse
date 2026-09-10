@@ -8,6 +8,7 @@ import 'package:my_ecomerse/features/auth/presentation/screens/phone_login_scree
 import 'package:my_ecomerse/features/home/presentation/screens/home_screen.dart';
 import 'package:my_ecomerse/features/splash/presentation/screens/splash_screen.dart';
 import 'package:my_ecomerse/features/wishlist/presentation/screens/wishlist_screen.dart';
+import 'package:my_ecomerse/features/chat/presentation/screens/chat_screen.dart';
 
 /// Helper Notifier that bridges Riverpod state changes to GoRouter's refreshListenable
 class RouterNotifier extends ChangeNotifier {
@@ -83,6 +84,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.wishlistPage,
         builder: (context, state) => const WishlistScreen(),
+      ),
+
+      // 6. Chat Page
+      GoRoute(
+        path: RouteNames.chatPage,
+        builder: (context, state) => const ChatScreen(),
       ),
 
       

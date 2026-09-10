@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/core/network/api_client_provider.dart';
 import 'package:my_ecomerse/features/home/data/models/feature_model.dart';
@@ -6,6 +7,7 @@ import 'package:my_ecomerse/features/wishlist/domain/repositories/wishlist_repos
 import 'package:my_ecomerse/features/wishlist/domain/use_case/get_wishlist_products_use_case.dart';
 import 'package:my_ecomerse/features/wishlist/domain/use_case/toggle_wishlist_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'wishlist_provider.g.dart';
 
@@ -49,14 +51,50 @@ ToggleWishlistUseCase toggleWishlistUseCase(Ref ref) {
 
 @riverpod
 class WishlistNotifier extends _$WishlistNotifier {
+  final String _cacheKey = 'cached_wishlist_ids';
   @override
   WishlistState build() {
-    Future.microtask(() => fetchWishlist());
+    Future.microtask(() async {
+      await loadWishListFromCache();
+      await fetchWishlist();
+    });
     return WishlistState(isLoading: true);
   }
 
+  Future<void> loadWishListFromCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final List<String>? savedJsonStrings = prefs.getStringList(_cacheKey);
+
+      if (savedJsonStrings != null && savedJsonStrings.isNotEmpty) {
+        final List<Product> cachedProducts = savedJsonStrings
+            .map((str) => Product.fromJson(jsonDecode(str)))
+            .toList();
+
+        // Immediately show the cached items!
+        state = state.copyWith(wishlistItems: cachedProducts, isLoading: false);
+      }
+    } catch (e) {
+      // print(e);
+    }
+  }
+
+  Future<void> saveWishListCache(List<Product> products) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      final List<String> jsonStrings = products
+          .map((prod) => jsonEncode(prod.toJson()))
+          .toList();
+      await prefs.setStringList(_cacheKey, jsonStrings);
+    } catch (e) {}
+  }
+
   Future<void> fetchWishlist() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    if (state.wishlistItems.isEmpty) {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+    }
+
     final useCase = ref.read(getWishlistProductsUseCaseProvider);
     final result = await useCase.execute();
     result.fold(
@@ -64,10 +102,10 @@ class WishlistNotifier extends _$WishlistNotifier {
         state = state.copyWith(isLoading: false, errorMessage: failure.message);
       },
       (wishlistModel) {
-        state = state.copyWith(
-          wishlistItems: wishlistModel.products,
-          isLoading: false,
-        );
+        final products = wishlistModel.products;
+        state = state.copyWith(wishlistItems: products, isLoading: false);
+        // Save the fresh data from the server to the local cache!
+        saveWishListCache(products);
       },
     );
   }
@@ -78,7 +116,9 @@ class WishlistNotifier extends _$WishlistNotifier {
     final updatedList = isFav
         ? state.wishlistItems.where((item) => item.id != product.id).toList()
         : [...state.wishlistItems, product];
+
     state = state.copyWith(wishlistItems: updatedList);
+    saveWishListCache(updatedList);
     final useCase = ref.read(toggleWishlistUseCaseProvider);
     final result = await useCase.execute(product.id, isFav);
     result.fold((failure) {

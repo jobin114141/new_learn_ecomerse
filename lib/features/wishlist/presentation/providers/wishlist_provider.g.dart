@@ -65,7 +65,7 @@ final toggleWishlistUseCaseProvider =
 // ignore: unused_element
 typedef ToggleWishlistUseCaseRef =
     AutoDisposeProviderRef<ToggleWishlistUseCase>;
-String _$wishlistNotifierHash() => r'e04d19f78154fe8161418632948b54ee9ce4fefc';
+String _$wishlistNotifierHash() => r'cea72b89c1df778b34a8ddb46c2450ef8353068c';
 
 /// See also [WishlistNotifier].
 @ProviderFor(WishlistNotifier)

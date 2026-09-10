@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/common/widgets/product_card_widget.dart';
 import 'package:my_ecomerse/features/wishlist/presentation/providers/wishlist_provider.dart';
 
-class WishlistScreen extends HookConsumerWidget {
+class WishlistScreen extends ConsumerWidget  {
   const WishlistScreen({super.key});
 
   @override

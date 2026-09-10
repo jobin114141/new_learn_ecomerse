@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/core/constants/dimensions.dart';
+import 'package:my_ecomerse/core/routes/route_name.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   final String title;
@@ -31,6 +32,15 @@ class CustomSliverAppBar extends StatelessWidget {
         ),
       ),
       actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.chat_bubble_outline_rounded,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            context.push(RouteNames.chatPage);
+          },
+        ),
         Consumer(
           builder: (context, ref, child) {
             return IconButton(
