@@ -1,77 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_ecomerse/features/chat/data/models/chat_message_model.dart';
+import 'package:my_ecomerse/features/chat/presentation/providers/chat_provider.dart';
 
-class ChatMessage {
-  final String text;
-  final bool isMe;
-  final DateTime time;
-
-  ChatMessage({required this.text, required this.isMe, required this.time});
-}
-
-class ChatScreen extends HookWidget {
+class ChatScreen extends HookConsumerWidget {
   const ChatScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textController = useTextEditingController();
     final scrollController = useScrollController();
-    
-    // Initial mock messages
-    final messages = useState<List<ChatMessage>>([
-      ChatMessage(
-        text: 'Hello! How can we help you today?',
-        isMe: false,
-        time: DateTime.now().subtract(const Duration(minutes: 5)),
-      ),
-      ChatMessage(
-        text: 'I have a question about my recent order.',
-        isMe: true,
-        time: DateTime.now().subtract(const Duration(minutes: 4)),
-      ),
-    ]);
+    final focusNode = useFocusNode();
 
-    void sendMessage() {
-      if (textController.text.trim().isEmpty) return;
-
-      messages.value = [
-        ...messages.value,
-        ChatMessage(
-          text: textController.text.trim(),
-          isMe: true,
-          time: DateTime.now(),
-        )
-      ];
-      textController.clear();
-      
-      // Scroll to bottom
-      Future.delayed(const Duration(milliseconds: 100), () {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
+    // Force keyboard open when screen loads
+    useEffect(() {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        focusNode.requestFocus();
       });
-      
-      // Mock reply
-      Future.delayed(const Duration(seconds: 1), () {
-        messages.value = [
-          ...messages.value,
-          ChatMessage(
-            text: 'Let me check on that for you right away.',
-            isMe: false,
-            time: DateTime.now(),
-          )
-        ];
-        Future.delayed(const Duration(milliseconds: 100), () {
+      return null;
+    }, []);
+
+    // Watch the Riverpod State! This gets all the messages from the WebSocket.
+    final messages = ref.watch(chatNotifierProvider);
+
+    // Auto-scroll to bottom when new messages arrive
+    ref.listen(chatNotifierProvider, (previous, next) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (scrollController.hasClients) {
           scrollController.animateTo(
             scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
           );
-        });
+        }
       });
+    });
+
+    void onSend() {
+      final text = textController.text;
+      if (text.isNotEmpty) {
+        ref.read(chatNotifierProvider.notifier).sendMessage(text);
+        textController.clear();
+        // Keep focus on the field after sending
+        focusNode.requestFocus();
+      }
     }
 
     return Scaffold(
@@ -95,19 +69,9 @@ class ChatScreen extends HookWidget {
               children: [
                 Text(
                   'Support Team',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  'Typically replies in minutes',
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 12,
-                  ),
-                ),
+                Text('Online - Live', style: TextStyle(color: Colors.green, fontSize: 12)),
               ],
             ),
           ],
@@ -120,21 +84,20 @@ class ChatScreen extends HookWidget {
               child: ListView.builder(
                 controller: scrollController,
                 padding: const EdgeInsets.all(16),
-                itemCount: messages.value.length,
+                itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  final message = messages.value[index];
-                  return _buildMessageBubble(message);
+                  return _buildMessageBubble(messages[index]);
                 },
               ),
             ),
-            _buildMessageInput(textController, sendMessage),
+            _buildMessageInput(textController, onSend, focusNode),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMessageBubble(ChatMessage message) {
+  Widget _buildMessageBubble(ChatMessageModel message) {
     return Align(
       alignment: message.isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -147,53 +110,34 @@ class ChatScreen extends HookWidget {
             bottomLeft: !message.isMe ? const Radius.circular(0) : const Radius.circular(20),
           ),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 5,
-              offset: const Offset(0, 2),
-            ),
+            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, 2)),
           ],
         ),
         constraints: const BoxConstraints(maxWidth: 280),
         child: Text(
           message.text,
-          style: TextStyle(
-            color: message.isMe ? Colors.white : Colors.black87,
-            fontSize: 15,
-          ),
+          style: TextStyle(color: message.isMe ? Colors.white : Colors.black87, fontSize: 15),
         ),
       ),
     );
   }
 
-  Widget _buildMessageInput(TextEditingController controller, VoidCallback onSend) {
+  Widget _buildMessageInput(TextEditingController controller, VoidCallback onSend, FocusNode focusNode) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
+        boxShadow: [BoxShadow(blurRadius: 10, offset: const Offset(0, -5))],
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.attach_file, color: Colors.grey),
-            onPressed: () {},
-          ),
           Expanded(
             child: TextField(
               controller: controller,
+              focusNode: focusNode, // Manually controlled focus
               decoration: InputDecoration(
                 hintText: 'Type a message...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide.none,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
                 filled: true,
                 fillColor: Colors.grey[100],
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
