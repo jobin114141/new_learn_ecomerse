@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/common/widgets/product_card_widget.dart';
 import 'package:my_ecomerse/features/wishlist/presentation/providers/wishlist_provider.dart';
 
-class WishlistScreen extends ConsumerWidget  {
+class WishlistScreen extends HookConsumerWidget {
   const WishlistScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wishlistState = ref.watch(wishlistNotifierProvider);
+
+    // Every time this screen opens (including navigating back to it),
+    // fetch fresh data from the server to catch cross-device changes.
+    useEffect(() {
+      Future.microtask(() =>
+          ref.read(wishlistNotifierProvider.notifier).fetchWishlist());
+      return null;
+    }, []);
 
     return Scaffold(
       appBar: AppBar(

@@ -91,6 +91,8 @@ class WishlistNotifier extends _$WishlistNotifier {
   }
 
   Future<void> fetchWishlist() async {
+    // Only show the full-screen spinner if there is no cached data yet.
+    // If we already have cached items, fetch silently in the background.
     if (state.wishlistItems.isEmpty) {
       state = state.copyWith(isLoading: true, errorMessage: null);
     }
