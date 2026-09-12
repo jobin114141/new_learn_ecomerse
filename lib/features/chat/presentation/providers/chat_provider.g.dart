@@ -62,7 +62,7 @@ final sendMessageUseCaseProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SendMessageUseCaseRef = AutoDisposeProviderRef<SendMessageUseCase>;
-String _$chatNotifierHash() => r'a35bcbb6869c473f760d2b6000e23004a7356424';
+String _$chatNotifierHash() => r'78136de54b737ac974b0eb46b424fe1a52154cd3';
 
 /// See also [ChatNotifier].
 @ProviderFor(ChatNotifier)

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_ecomerse/core/constants/dimensions.dart';
 import 'package:my_ecomerse/core/routes/route_name.dart';
+import 'package:my_ecomerse/features/search/presentation/screen/search_screen.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   final String title;
@@ -32,6 +33,18 @@ class CustomSliverAppBar extends StatelessWidget {
         ),
       ),
       actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.search,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SearchScreen()),
+            );
+          },
+        ),
         IconButton(
           icon: const Icon(
             Icons.chat_bubble_outline_rounded,
