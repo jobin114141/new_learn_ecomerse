@@ -48,12 +48,9 @@ AllItemsRepository allProducts(Ref ref) {
   return AllProductsImpl(ref.watch(apiClientProvider));
 }
 
-
 @riverpod
 GetAllProductsUseCase getAllProductsUseCase(Ref ref) {
-  return GetAllProductsUseCase(
-    ref.watch(allProductsProvider),
-  );
+  return GetAllProductsUseCase(ref.watch(allProductsProvider));
 }
 
 @riverpod
@@ -120,7 +117,7 @@ class AllProductsNotifier extends _$AllProductsNotifier {
             hasMore: newProducts.length >= _limit,
           );
         } else {
-           state = state.copyWith(isFetchingMore: false, hasMore: false);
+          state = state.copyWith(isFetchingMore: false, hasMore: false);
         }
       },
     );

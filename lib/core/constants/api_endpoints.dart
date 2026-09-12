@@ -15,5 +15,8 @@ class ApiEndpoints {
   static const String productStorageUrl = '$baseUrl/storage/app/public/product/';
 
   static const String wishListUri = '/api/v1/products/favorite';
+
+  static const String searchProducts = '/api/v1/products/search';
+
 }
 
