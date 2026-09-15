@@ -6,6 +6,7 @@ import 'package:my_ecomerse/features/home/data/models/all_products_model';
 import 'package:my_ecomerse/features/home/domain/repositories/all_items_repository.dart';
 
 class AllProductsImpl extends AllItemsRepository {
+  // ignore: unused_field
   final ApiClient _apiClient;
   // Create a raw Dio instance specifically for Pexels so our ApiClient 
   // interceptors don't overwrite the Authorization header!
