@@ -58,7 +58,7 @@ class LoginScreen extends HookConsumerWidget {
 
                 const SizedBox(height: 40),
                 const Text(
-                  'Login or Sign ',
+                  'Login or Sign sample ',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
