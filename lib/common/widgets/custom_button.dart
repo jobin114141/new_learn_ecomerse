@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_ecomerse/core/theme/dimensions.dart';
+import 'package:my_ecomerse/core/constants/dimensions.dart';
 import 'package:my_ecomerse/core/theme/styles.dart' show poppinsMedium;
 
 class CustomButtonWidget extends StatelessWidget {

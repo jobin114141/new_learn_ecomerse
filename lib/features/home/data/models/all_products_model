@@ -1,0 +1,76 @@
+class PexelsResponse {
+  final int totalResults;
+  final int page;
+  final int perPage;
+  final List<PexelsPhoto> photos;
+
+  PexelsResponse({
+    required this.totalResults,
+    required this.page,
+    required this.perPage,
+    required this.photos,
+  });
+
+  factory PexelsResponse.fromJson(Map<String, dynamic> json) {
+    return PexelsResponse(
+      totalResults: json['total_results'],
+      page: json['page'],
+      perPage: json['per_page'],
+      photos: (json['photos'] as List)
+          .map((photo) => PexelsPhoto.fromJson(photo))
+          .toList(),
+    );
+  }
+}
+
+class PexelsPhoto {
+  final int id;
+  final int width;
+  final int height;
+  final String photographer;
+  final String url;
+  final PexelsImageSource src;
+
+  PexelsPhoto({
+    required this.id,
+    required this.width,
+    required this.height,
+    required this.photographer,
+    required this.url,
+    required this.src,
+  });
+
+  factory PexelsPhoto.fromJson(Map<String, dynamic> json) {
+    return PexelsPhoto(
+      id: json['id'],
+      width: json['width'],
+      height: json['height'],
+      photographer: json['photographer'],
+      url: json['url'],
+      src: PexelsImageSource.fromJson(json['src']),
+    );
+  }
+}
+
+class PexelsImageSource {
+  final String original;
+  final String large;
+  final String medium;
+  final String small;
+
+  PexelsImageSource({
+    required this.original,
+    required this.large,
+    required this.medium,
+    required this.small,
+  });
+
+  factory PexelsImageSource.fromJson(Map<String, dynamic> json) {
+    return PexelsImageSource(
+      original: json['original'],
+      large: json['large'],
+      medium: json['medium'],
+      small: json['small'],
+    );
+  }
+}
