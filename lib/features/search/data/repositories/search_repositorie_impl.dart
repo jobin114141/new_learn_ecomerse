@@ -22,7 +22,7 @@ class SearchRepositorieImpl extends SearchRepositorie {
           'name': productName,
           'limit': limit,
           'offset': offset,
-        },
+        }, 
       );
 
       if (response.statusCode == 200) {
