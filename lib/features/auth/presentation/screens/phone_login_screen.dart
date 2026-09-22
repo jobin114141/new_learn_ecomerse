@@ -63,7 +63,7 @@ class LoginScreen extends HookConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                    Text(
-                  'new updated text is here 2!',
+                  'Text chanfed by jobin',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                 ),
                 Text(
