@@ -62,6 +62,10 @@ class LoginScreen extends HookConsumerWidget {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
+                   Text(
+                  'new updated text is here 2!',
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                ),
                 Text(
                   'Enter your mobile number to receive an OTP',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
